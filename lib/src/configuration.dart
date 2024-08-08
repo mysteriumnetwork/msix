@@ -70,6 +70,7 @@ class Configuration {
   String osMinVersion = '10.0.17763.0';
   bool isTestCertificate = false;
   ContextMenuConfiguration? contextMenuConfiguration;
+  ServiceConfiguration? serviceConfiguration;
 
   Configuration(this._arguments);
 
@@ -197,6 +198,10 @@ class Configuration {
             !skipContextMenu
         ? ContextMenuConfiguration.fromYaml(contextMenuYaml)
         : null;
+
+    dynamic serviceYaml = yaml['service'];
+    serviceConfiguration =
+        serviceYaml != null ? ServiceConfiguration.fromMap(serviceYaml) : null;
   }
 
   /// Validate the configuration values and set default values
@@ -566,6 +571,32 @@ class StartupTask {
       taskId: map['task_id'] ?? appName.replaceAll('_', ''),
       enabled: map['enabled'] ?? true,
       parameters: map['parameters'],
+    );
+  }
+}
+
+class ServiceConfiguration {
+  final String executable;
+  final String serviceName;
+  final String startupType;
+  final String startAccount;
+  final String serviceArguments;
+
+  ServiceConfiguration({
+    required this.executable,
+    required this.serviceName,
+    required this.startupType,
+    required this.startAccount,
+    required this.serviceArguments,
+  });
+
+  factory ServiceConfiguration.fromMap(Map map) {
+    return ServiceConfiguration(
+      executable: map['executable'],
+      serviceName: map['service_name'],
+      startupType: map['startup_type'],
+      startAccount: map['start_account'],
+      serviceArguments: map['service_arguments'],
     );
   }
 }

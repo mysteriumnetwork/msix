@@ -103,6 +103,8 @@ class AppxManifest {
       ${_config.appUriHandlerHosts != null && _config.appUriHandlerHosts!.isNotEmpty ? _getAppUriHandlerHostExtension() : ''}
       ${_config.contextMenuConfiguration != null ? _getContextMenuExtension() : ''}
       ${_config.contextMenuConfiguration?.comSurrogateServers.isNotEmpty == true || _config.toastActivatorCLSID != null ? _getComServers() : ''}
+      ${_config.serviceConfiguration != null ? _getServiceConfiguration() : '-'}
+
         </Extensions>''';
     } else {
       return '';
@@ -165,6 +167,19 @@ class AppxManifest {
     return '''  <desktop:Extension Category="windows.toastNotificationActivation">
           <desktop:ToastNotificationActivation ToastActivatorCLSID="${_config.toastActivatorCLSID.toHtmlEscape()}"/>
         </desktop:Extension>''';
+  }
+
+  String _getServiceConfiguration() {
+    final ServiceConfiguration? sc = _config.serviceConfiguration;
+    if (sc != null) {
+      return '''  <desktop6:Extension Category="windows.service" Executable="${sc.executable}" EntryPoint="Windows.FullTrustApplication">
+            <desktop6:Service Name="${sc.serviceName}" 
+                      StartupType="${sc.startupType}"
+                      StartAccount="${sc.startAccount}" Arguments="${sc.serviceArguments}">
+            </desktop6:Service>
+        </desktop6:Extension>''';
+    }
+    return '';
   }
 
   String _getComServers() {
